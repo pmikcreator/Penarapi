@@ -1,6 +1,6 @@
 {
   "name": "PenaRapi - AI Book Formatter",
-  "description": "Aplikasi untuk merapikan tulisan sesuai format standar penulisan buku profesional secara otomatis menggunakan AI.",
+  "description": "Smart AI Book Editor with multi-chapter management, professional formatting presets, and AI-powered cover generation.",
   "requestFramePermissions": [],
   "majorCapabilities": []
 }

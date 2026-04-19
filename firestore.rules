@@ -1,0 +1,89 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // 0. Catch-all safety net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // --- Helpers ---
+    function isSignedIn() {
+      return request.auth != null && request.auth.token.email_verified == true;
+    }
+    
+    function isOwner(ownerId) {
+      return isSignedIn() && request.auth.uid == ownerId;
+    }
+
+    function getProjectOwner(projectId) {
+      return get(/databases/$(database)/documents/projects/$(projectId)).data.ownerId;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    // --- Validation Blueprints ---
+    
+    function isValidProject(data) {
+      let required = ['title', 'ownerId', 'createdAt', 'updatedAt'];
+      return data.keys().hasAll(required) 
+        && data.keys().size() <= 7 // allow optional fields like author, coverImage, currentTheme
+        && data.title is string && data.title.size() <= 200
+        && data.ownerId == request.auth.uid
+        && data.createdAt == (resource == null ? request.time : existing().createdAt)
+        && data.updatedAt == request.time;
+    }
+
+    function isValidChapter(data) {
+      return data.keys().hasAll(['title', 'content', 'order', 'updatedAt'])
+        && data.keys().size() == 4
+        && data.title is string && data.title.size() <= 200
+        && data.content is string && data.content.size() <= 1048576 // 1MB
+        && data.order is number
+        && data.updatedAt == request.time;
+    }
+
+    // --- Routes ---
+
+    match /projects/{projectId} {
+      allow get: if isOwner(existing().ownerId);
+      allow list: if isSignedIn() && resource.data.ownerId == request.auth.uid;
+      
+      allow create: if isSignedIn() && isValidId(projectId) && isValidProject(incoming());
+      
+      allow update: if isOwner(existing().ownerId) 
+        && isValidProject(incoming())
+        && incoming().ownerId == existing().ownerId
+        && (
+          // Action: Rename Title or Update Metadata
+          incoming().diff(existing()).affectedKeys().hasAny(['title', 'author', 'coverImage', 'currentTheme', 'updatedAt'])
+        );
+        
+      allow delete: if isOwner(existing().ownerId);
+
+      // Assets (like covers)
+      match /assets/{assetId} {
+        allow read, write: if isOwner(getProjectOwner(projectId));
+      }
+
+      // Sub-collection hierarchy
+      match /chapters/{chapterId} {
+        allow read: if isOwner(getProjectOwner(projectId));
+        allow create: if isOwner(getProjectOwner(projectId)) && isValidId(chapterId) && isValidChapter(incoming());
+        allow update: if isOwner(getProjectOwner(projectId)) && isValidChapter(incoming());
+        allow delete: if isOwner(getProjectOwner(projectId));
+      }
+    }
+  }
+}

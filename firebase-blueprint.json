@@ -1,0 +1,41 @@
+{
+  "entities": {
+    "Project": {
+      "title": "E-Book Project",
+      "description": "Metadata for a book project",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string", "description": "Book title" },
+        "author": { "type": "string", "description": "Author name" },
+        "coverImage": { "type": "string", "description": "Base64 or URL of cover" },
+        "currentTheme": { "type": "string", "description": "Active UI theme" },
+        "ownerId": { "type": "string", "description": "UID of the creator" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["title", "ownerId", "createdAt", "updatedAt"]
+    },
+    "Chapter": {
+      "title": "Book Chapter",
+      "description": "Content and title of a specific chapter",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "content": { "type": "string" },
+        "order": { "type": "number", "description": "Sorting order" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["title", "content", "order", "updatedAt"]
+    }
+  },
+  "firestore": {
+    "projects/{projectId}": {
+      "schema": "Project",
+      "description": "Top-level project documents"
+    },
+    "projects/{projectId}/chapters/{chapterId}": {
+      "schema": "Chapter",
+      "description": "Individual chapters belonging to a project"
+    }
+  }
+}

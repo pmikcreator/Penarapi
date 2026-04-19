@@ -19,47 +19,149 @@
   }
 }
 
+/* Theme Variatons */
+.theme-nature {
+  --color-bg: #F5F5F0;
+  --color-ink: #2C3327;
+  --color-accent: #5A6340;
+}
+
+.theme-dark {
+  --color-bg: #18181B;
+  --color-ink: #F4F4F5;
+  --color-accent: #3F3F46;
+}
+
+.theme-midnight {
+  --color-bg: #0F172A;
+  --color-ink: #F1F5F9;
+  --color-accent: #1E293B;
+}
+
 .book-preview {
   hyphens: auto;
   -webkit-hyphens: auto;
-  text-align: justify;
-  text-justify: inter-word;
-  text-align-last: left;
 }
 
 .book-preview h1 {
-  @apply font-serif text-3xl font-bold mb-8 text-center uppercase tracking-tight text-[var(--color-ink)];
+  @apply font-serif text-3xl font-bold mb-8 text-center uppercase tracking-tight;
+  hyphens: none;
+}
+
+.theme-modern .book-preview h1 {
+  @apply font-sans text-4xl font-black text-left tracking-tighter normal-case;
+}
+
+.theme-midnight .book-preview h1 {
+  @apply text-sky-400;
 }
 
 .book-preview h2 {
-  @apply font-serif text-xl italic mt-6 mb-3 text-slate-600 text-left;
+  @apply font-serif text-xl italic mt-12 mb-6 border-b border-current/10 pb-2;
+  hyphens: none;
+}
+
+.theme-modern .book-preview h2 {
+  @apply font-sans not-italic font-bold uppercase tracking-widest text-sm bg-black text-white px-2 py-1 inline-block;
 }
 
 .book-preview h3 {
-  @apply font-serif text-lg font-bold mt-4 mb-2 text-slate-700 text-left;
+  @apply font-serif text-lg font-bold mt-8 mb-4;
+  hyphens: none;
 }
 
 .book-preview p {
-  @apply font-serif text-[15px] leading-relaxed mb-4;
+  @apply font-serif text-[17px] leading-[1.8] mb-4;
+  text-align: justify;
+  text-justify: inter-word;
+}
+
+/* Identation rules for a professional book look */
+.book-preview p {
+  text-indent: 0;
+  margin-bottom: 1.5rem;
+}
+
+/* Indent every paragraph EXCEPT the first one after a header/break */
+.book-preview h1 + p,
+.book-preview h2 + p,
+.book-preview h3 + p,
+.book-preview hr + p,
+.book-preview div + p {
+  text-indent: 0 !important;
+}
+
+/* For themes that use Traditional Book Layout (Classic/Nature) */
+.theme-classic .book-preview p + p,
+.theme-nature .book-preview p + p {
   text-indent: 2em;
+  margin-top: -1.5rem; /* Negate the margin-bottom of previous p */
 }
 
-.book-preview ul, .book-preview ol {
-  @apply font-serif text-[15px] mb-4 ml-10 list-disc text-left;
+/* Handle groups of short lines often found in signatures/closings */
+.book-page {
+  @apply selection:bg-amber-100;
 }
 
-.book-preview li {
-  @apply mb-1;
+.book-page h1 {
+  @apply font-serif text-4xl font-black mb-12 mt-8 text-center uppercase tracking-tight text-zinc-900;
+}
+
+.book-page h2 {
+  @apply font-serif text-2xl italic mt-20 mb-8 border-b-2 border-zinc-900 pb-2 text-zinc-800;
+}
+
+.book-page p {
+  @apply indent-0 text-left mb-8 font-serif text-[18px] leading-[1.8] text-zinc-800;
+  text-align: justify;
+  text-justify: inter-word;
+}
+
+/* Documentation style: No indent, clear block spacing */
+.book-page p + p {
+  text-indent: 0;
+}
+
+/* First paragraph in a section or a standalone block */
+.book-page h1 + p, 
+.book-page h2 + p,
+.book-page blockquote + p {
+  text-indent: 0 !important;
+}
+
+/* Signature & Closing Logic: Detect lines that follow a signature-like pattern */
+.book-page p:has(em), 
+.book-page p:has(strong) {
+  text-indent: 0 !important;
+  text-align: left !important;
+  @apply mb-1 mt-0; /* Tighter vertical stack */
+}
+
+.book-page p:has(strong) {
+  @apply mt-6; /* Space before the actual name */
+}
+
+/* Reset for modern themes */
+.theme-modern .book-page p {
+  @apply font-sans indent-0 mb-6;
+}
+
+.theme-modern .book-preview p {
+  @apply font-sans text-[15px] indent-0 text-left;
+}
+
+.theme-nature .book-preview p {
+  @apply leading-[2];
 }
 
 .book-preview blockquote {
-  @apply border-l-4 border-[var(--color-accent)] pl-8 py-5 my-10 italic text-[var(--color-muted)] bg-slate-100/30 rounded-r-md relative;
-  font-size: 1.05rem;
+  @apply border-l-4 border-current/20 pl-8 py-5 my-10 italic opacity-80 bg-current/[0.03] rounded-r-md relative;
+  font-size: 1.1rem;
 }
 
 .book-preview blockquote::before {
   content: "“";
-  @apply absolute -left-2 top-0 text-7xl text-[var(--color-accent)] opacity-10 font-serif leading-none select-none;
+  @apply absolute -left-2 top-0 text-7xl opacity-10 font-serif leading-none select-none;
 }
 
 .book-preview table {

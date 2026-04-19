@@ -25,6 +25,13 @@ app.use(session({
   }
 }));
 
+// Helper to get Redirect URI
+const getRedirectUri = (req: express.Request) => {
+  const protocol = req.headers['x-forwarded-proto'] || 'http';
+  const host = req.headers['host'];
+  return `${protocol}://${host}/auth/google/callback`;
+};
+
 // Google OAuth Setup Helper
 const createOAuthClient = (req: express.Request) => {
   return new google.auth.OAuth2(
@@ -38,13 +45,6 @@ const SCOPES = [
   'https://www.googleapis.com/auth/documents',
   'https://www.googleapis.com/auth/drive.file'
 ];
-
-// Helper to get Redirect URI
-const getRedirectUri = (req: express.Request) => {
-  const protocol = req.headers['x-forwarded-proto'] || 'http';
-  const host = req.headers['host'];
-  return `${protocol}://${host}/auth/google/callback`;
-};
 
 // API: Get Google Auth URL
 app.get('/api/auth/google/url', (req, res) => {
