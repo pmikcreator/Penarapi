@@ -1,0 +1,93 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+
+@theme {
+  --color-bg: #F9F8F6;
+  --color-ink: #1A1A1A;
+  --color-accent: #E63946;
+  --color-border: #E0DDD7;
+  --color-muted: #888580;
+  
+  --font-sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-serif: "Georgia", serif;
+  --font-logo: "Inter", sans-serif;
+}
+
+@layer base {
+  body {
+    @apply font-sans bg-[var(--color-bg)] text-[var(--color-ink)];
+  }
+}
+
+.book-preview {
+  hyphens: auto;
+  -webkit-hyphens: auto;
+  text-align: justify;
+  text-justify: inter-word;
+  text-align-last: left;
+}
+
+.book-preview h1 {
+  @apply font-serif text-3xl font-bold mb-8 text-center uppercase tracking-tight text-[var(--color-ink)];
+}
+
+.book-preview h2 {
+  @apply font-serif text-xl italic mt-6 mb-3 text-slate-600 text-left;
+}
+
+.book-preview h3 {
+  @apply font-serif text-lg font-bold mt-4 mb-2 text-slate-700 text-left;
+}
+
+.book-preview p {
+  @apply font-serif text-[15px] leading-relaxed mb-4;
+  text-indent: 2em;
+}
+
+.book-preview ul, .book-preview ol {
+  @apply font-serif text-[15px] mb-4 ml-10 list-disc text-left;
+}
+
+.book-preview li {
+  @apply mb-1;
+}
+
+.book-preview blockquote {
+  @apply border-l-4 border-[var(--color-accent)] pl-8 py-5 my-10 italic text-[var(--color-muted)] bg-slate-100/30 rounded-r-md relative;
+  font-size: 1.05rem;
+}
+
+.book-preview blockquote::before {
+  content: "“";
+  @apply absolute -left-2 top-0 text-7xl text-[var(--color-accent)] opacity-10 font-serif leading-none select-none;
+}
+
+.book-preview table {
+  @apply w-full my-8 border-collapse font-sans text-[13px] block overflow-x-auto;
+  text-align: left;
+  text-align-last: auto;
+}
+
+.book-preview thead {
+  @apply bg-slate-100/30;
+}
+
+.book-preview th {
+  @apply border-y-2 border-[var(--color-ink)] py-4 px-4 text-left font-black uppercase tracking-widest text-[var(--color-ink)] leading-tight whitespace-nowrap;
+}
+
+.book-preview td {
+  @apply border-b border-[var(--color-border)] py-4 px-4 text-left align-top leading-normal;
+}
+
+.book-preview tr:nth-child(even) {
+  @apply bg-slate-50/30;
+}
+
+.book-preview tr:hover td {
+  @apply bg-[var(--color-accent)]/5;
+}
+
+.book-preview tr:last-child td {
+  @apply border-b-2 border-[var(--color-ink)];
+}
